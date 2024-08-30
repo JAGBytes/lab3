@@ -1,25 +1,24 @@
 package edu.eci.cvds.tdd.library;
-
-
+import edu.eci.cvds.tdd.library.book.*;
 import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
 
 public class LibraryTest {
-//pasa
+/*ADD A BOOK*/
+    //pasa
     @Test
     public void AddanExistingBookSuccessfully(){
-
 
     }
     //pasa
     @Test
     public void AddNewBookSuccessfully(){
 
-
     }
-//Nodeberia pasar
+    //Nodeberia pasar
     @Test
     public void ParameterWithOtherObject(){
-
 
     }
     //No deberia pasar
@@ -37,10 +36,11 @@ public class LibraryTest {
     public void VerifyBookWithDiferentId(){
 
     }
-//Lean a Book
+
+/*LEAN A BOOK*/
+
     @Test
     public void AddNewLeanSuccessfully(){
-
 
     }
     @Test
@@ -53,23 +53,21 @@ public class LibraryTest {
 
 
     }
-
     @Test
     public void VerifyParametersNotFound(){
 
-
     }
-
     @Test
     public void VerifyDecrementAmountOfBook(){
 
 
     }
-
     @Test
     public void LoanStatusActive(){
     }
-//Return Loan
+
+/*RETURN LOAN*/
+
     @Test
     public void VerifyReturnedStatusLoan(){
 
