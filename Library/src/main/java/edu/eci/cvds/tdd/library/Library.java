@@ -71,6 +71,12 @@ public class Library {
     public boolean addUser(User user) {
         return users.add(user);
     }
+    public Map<Book, Integer> getBooks() {
+        return books;
+    }
+    public List<Loan> getLoans() {
+        return loans;
+    }
 
 
     public Map<Book, Integer> getBooks() {
