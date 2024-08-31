@@ -145,9 +145,18 @@ public class LibraryTest {
         Loan returnedLoan = library.returnLoan(isloan);
         assertEquals(returnedLoan.getReturnDate(), LocalDate.now());
     }
+    //Verifica que el prestamo coincida con el usuario
     @Test
     public void VerifyCorrectUser(){
-
+        User newUser = new User();
+        newUser.setId("U534");
+        newUser.setName("Juan");
+        Book newBook = new Book("Cumbres Borrascosas","Emily Bronte","L989");
+        library.addBook(newBook);
+        library.addUser(newUser);
+        Loan isloan = library.loanABook("U534","L989");
+        Loan returnedLoan = library.returnLoan(isloan);
+        assertEquals(returnedLoan.getUser(), newUser);
 
     }
     @Test
