@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 
 
+
 public class LibraryTest {
     Library library;
     Book book;
@@ -102,6 +103,7 @@ public class LibraryTest {
         library.addUser(newUser);
         Loan isloan = library.loanABook("U432","L432");
         assertEquals(0,library.getBooks().get(newBook));
+
     }
     //Verifica que el estado del prestamo esté activo
     @Test
@@ -120,7 +122,6 @@ public class LibraryTest {
 
     @Test
     public void VerifyReturnedStatusLoan(){
-
 
     }
     @Test
@@ -144,6 +145,7 @@ public class LibraryTest {
         Loan isloan = library.loanABook("U534","L989");
         Loan returnedLoan = library.returnLoan(isloan);
         assertEquals(returnedLoan.getReturnDate(), LocalDate.now());
+
     }
     //Verifica que el prestamo coincida con el usuario
     @Test
@@ -159,9 +161,10 @@ public class LibraryTest {
         assertEquals(returnedLoan.getUser(), newUser);
 
     }
+    //Verifica que el monto del libro se haya incrementado
     @Test
-    public void SendABookFromOtherUser(){
-
+    public void CheckIncreaseLeanBook(){
+        
 
     }
     
