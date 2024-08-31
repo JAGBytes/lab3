@@ -164,7 +164,17 @@ public class LibraryTest {
     //Verifica que el monto del libro se haya incrementado
     @Test
     public void CheckIncreaseLeanBook(){
-        
+        User newUser = new User();
+        newUser.setId("U436");
+        newUser.setName("Esteban");
+        Book newBook = new Book("Frankenstein","Mary Shelly","L448");
+        library.addBook(newBook);
+        library.addUser(newUser);
+        Loan isloan = library.loanABook("U436","L448");
+        Loan returnedLoan = library.returnLoan(isloan);
+        Book leanBook = returnedLoan.getBook();
+        assertEquals(library.getBooks().get(leanBook), 1);
+
 
     }
     
