@@ -95,6 +95,14 @@ public class LibraryTest {
     //Verifica que el monto del libro prestado se decremente
     @Test
     public void VerifyDecrementAmountOfBook(){
+        User newUser = new User();
+        newUser.setId("U432");
+        newUser.setName("Jorge");
+        Book newBook = new Book("IT","Stephen King","L432");
+        library.addBook(newBook);
+        library.addUser(newUser);
+        Loan isloan = library.loanABook("U432","L432");
+        assertEquals(0,library.getBooks().get(newBook));
 
     }
     //Verifica que el estado del prestamo esté activo
