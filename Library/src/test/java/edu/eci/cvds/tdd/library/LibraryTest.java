@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 
 
+
 public class LibraryTest {
     Library library;
     Book book;
@@ -94,7 +95,7 @@ public class LibraryTest {
     //Verifica que el monto del libro prestado se decremente
     @Test
     public void VerifyDecrementAmountOfBook(){
-        
+
     }
     //Verifica que el estado del prestamo esté activo
     @Test
@@ -107,7 +108,6 @@ public class LibraryTest {
     @Test
     public void VerifyReturnedStatusLoan(){
 
-
     }
     @Test
     public void VerifyReturnedBookIncrement(){
@@ -118,19 +118,21 @@ public class LibraryTest {
 
 
     }
+    //Verifica que la fecha que se devolvió el prestamos coincida con la fecha actual
     @Test
     public void VerifyCurrentDate(){
-
-
+       
     }
+    //Verifica que el prestamo coincida con el usuario
     @Test
     public void VerifyCorrectUser(){
-
+        
 
     }
+    //Verifica que el monto del libro se haya incrementado
     @Test
-    public void SendABookFromOtherUser(){
-
+    public void CheckIncreaseLeanBook(){
+        
 
     }
     
