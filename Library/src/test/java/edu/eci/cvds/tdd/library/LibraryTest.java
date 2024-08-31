@@ -106,7 +106,14 @@ public class LibraryTest {
     //Verifica que el estado del prestamo esté activo
     @Test
     public void LoanStatusActive(){
-
+        User newUser = new User();
+        newUser.setId("U432");
+        newUser.setName("Andres");
+        Book newBook = new Book("Harry Potter","J.K Rowling","L895");
+        library.addBook(newBook);
+        library.addUser(newUser);
+        Loan isloan = library.loanABook("U432","L895");
+        assertEquals(isloan.getStatus(), LoanStatus.ACTIVE);
     }
 
 /*RETURN LOAN*/
