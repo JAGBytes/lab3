@@ -3,6 +3,7 @@ import edu.eci.cvds.tdd.library.book.*;
 import edu.eci.cvds.tdd.library.loan.Loan;
 import edu.eci.cvds.tdd.library.loan.LoanStatus;
 import edu.eci.cvds.tdd.library.user.User;
+import edu.eci.cvds.tdd.library.LibraryException;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -74,17 +75,31 @@ public class LibraryTest {
 
 
     }
+    //Añade Usuarios y libros que no existen, no deberia pasar
+    //Debería lanzar una excepcion que indique que el usuario o libro no se encuentra
     @Test
     public void VerifyParametersNotFound(){
-
+        Book newBook = new Book("IT","Stephen King","L432");
+        //Enviar un usuario que no existe
+        LibraryException exception = assertThrows(LibraryException.class, () -> {
+            library.loanABook("U895","L432");
+        });
+        assertEquals("User not found", exception.getMessage());
+        //Enviar un libro que no existe
+        LibraryException exception2 = assertThrows(LibraryException.class, () -> {
+            library.loanABook("U123","L000");
+        });
+        assertEquals("Book not found", exception2.getMessage());
     }
+    //Verifica que el monto del libro prestado se decremente
     @Test
     public void VerifyDecrementAmountOfBook(){
-
-
+        
     }
+    //Verifica que el estado del prestamo esté activo
     @Test
     public void LoanStatusActive(){
+
     }
 
 /*RETURN LOAN*/
