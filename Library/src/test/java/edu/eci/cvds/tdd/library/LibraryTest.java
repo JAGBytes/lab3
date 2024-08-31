@@ -1,10 +1,28 @@
 package edu.eci.cvds.tdd.library;
 import edu.eci.cvds.tdd.library.book.*;
+import edu.eci.cvds.tdd.library.loan.Loan;
+import edu.eci.cvds.tdd.library.loan.LoanStatus;
+import edu.eci.cvds.tdd.library.user.User;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 
+
 public class LibraryTest {
+    Library library;
+    Book book;
+    User user;
+    Loan loan;
+    @BeforeEach
+    public void setUp(){
+        library = new Library();
+        book = new Book("Cien anios de soledad","Gabriel Garcia Marquez","L123");
+        user = new User();
+        loan = new Loan();
+        user.setName("Camila");
+        user.setId("U123");
+        library.addUser(user);
+    }
 /*ADD A BOOK*/
     //pasa
     @Test
@@ -21,13 +39,16 @@ public class LibraryTest {
     public void ParameterWithOtherObject(){
 
     }
-    //No deberia pasar
+    //No deberia pasar, verifica que no sea valido parametros nulos
     @Test
-    public void VerifyBookWithDiferentTitle(){
+    public void SendNullBook(){
+        assertFalse(!library.addBook(null));
 
     }
+
+    //Pendiente
     //No deberia PASAR
-    @Test
+    /*@Test
     public void VerifyBookWithDiferentAuthor(){
 
     }
@@ -35,7 +56,7 @@ public class LibraryTest {
     @Test
     public void VerifyBookWithDiferentId(){
 
-    }
+    }*/
 
 /*LEAN A BOOK*/
 
