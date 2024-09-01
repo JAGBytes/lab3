@@ -38,7 +38,9 @@ public class LibraryTest {
     @Test
     public void AddanExistingBookSuccessfully(){
         library.addBook(book);
-        assertTrue(library.addBook(book));
+        Book book2 = new Book("El coronel no tiene quien le escriba","Gabriel Garcia Marquez","L123");
+        library.addBook(book2);
+        assertEquals(2,library.getBooks().get(book));
     }
     //pasa
     @Test
@@ -60,41 +62,38 @@ public class LibraryTest {
 
     }
 
-    //Pendiente
-    //No deberia PASAR
-    /*@Test
-    public void VerifyBookWithDiferentAuthor(){
-
-    }
-    //No deberia pasar
-    @Test
-    public void VerifyBookWithDiferentId(){
-
-    }*/
-
 /*LEAN A BOOK*/
 
     @Test
-    public void AddNewLeanSuccessfully(){
-        User user = new User();
-        user.setName("jorge");
-        user.setId("U711");
-        Book book = new Book("Brandon Sanderson", "Palabras Radiantes", "R200");
-        assertNotNull(library.loanABook(user.getId(), book.getIsbn()));
+    public void AddNewLeanSuccessfully()  {
+        User user1 = new User();
+        user1.setName("jorge");
+        user1.setId("U711");
+        Book book1 = new Book("Brandon Sanderson", "Palabras Radiantes", "R200");
+        library.addUser(user1);
+        library.addBook(book1);
+        assertNotNull(library.loanABook(user1.getId(), book1.getIsbn()));
     }
     @Test
     public void LeanABookNotAvailable(){
-        library.loanABook(user.getId(), book.getIsbn());
+        /*library.loanABook(user.getId(), book.getIsbn());
         LibraryException exception = assertThrows(LibraryException.class, () -> {
             library.loanABook(user2.getId(), book.getIsbn());
         });
-        assertEquals("Book not available", exception.getMessage());
+        assertEquals("Book not available", exception.getMessage());*/
+        library.addBook(book);
+        Loan loan1 = library.loanABook(user2.getId(), book.getIsbn());
+        Loan noLoan = library.loanABook(user.getId(), book.getIsbn());
+        assertNull(noLoan);
     }
     @Test
     public void VerifyThatAllBooksOfTheSameIdCanBeLeant(){
         Book book1 = new Book("Brandon Sanderson", "Palabras Radiantes", "R200");
         Book book2 = new Book("Brandon Sanderson", "El camino de los reyes", "R200");
         Book book3 = new Book("Brandon Sanderson", "Juramentada", "R200");
+        library.addBook(book1);
+        library.addBook(book2);
+        library.addBook(book3);
         Loan loan1 = library.loanABook(user.getId(),book1.getIsbn());
         Loan loan2 = library.loanABook(user2.getId(), book2.getIsbn());
         Loan loan3 = library.loanABook(user3.getId(), book3.getIsbn());
@@ -151,10 +150,11 @@ public class LibraryTest {
     @Test
     public void UserCannotLoanSameBookTwiceAtSameTime() {
         Loan loan = library.loanABook(user.getId(), book.getIsbn());
-        LibraryException exception = assertThrows(LibraryException.class, () -> {
+        /*LibraryException exception = assertThrows(LibraryException.class, () -> {
             library.loanABook(user.getId(), book.getIsbn());
         });
-        assertEquals("Loan not found", exception.getMessage());
+        assertEquals("Loan not found", exception.getMessage());*/
+        assertNull(library.loanABook(user.getId(), book.getIsbn()));
     }
 
 /*RETURN LOAN*/
@@ -162,6 +162,7 @@ public class LibraryTest {
     @Test
     public void VerifyReturnedStatusLoan(){
         Book book1 = new Book("Brandon Sanderson", "Palabras Radiantes", "R200");
+        library.addBook(book1);
         Loan loan1 = library.loanABook(user.getId(),book1.getIsbn());
         assertEquals(LoanStatus.ACTIVE,loan1.getStatus());
         library.returnLoan(loan1);
@@ -172,6 +173,9 @@ public class LibraryTest {
         Book book1 = new Book("Brandon Sanderson", "Palabras Radiantes", "R200");
         Book book2 = new Book("Brandon Sanderson", "El camino de los reyes", "R200");
         Book book3 = new Book("Brandon Sanderson", "Juramentada", "R200");
+        library.addBook(book1);
+        library.addBook(book2);
+        library.addBook(book3);
         Loan loan1 = library.loanABook(user.getId(),book1.getIsbn());
         Loan loan2 = library.loanABook(user2.getId(), book2.getIsbn());
         Loan loan3 = library.loanABook(user3.getId(), book3.getIsbn());
@@ -185,15 +189,13 @@ public class LibraryTest {
     }
     @Test
     public void LoanDoesNotExist(){
-        LibraryException exception = assertThrows(LibraryException.class, () -> {
-            loan = new Loan();
-            loan.setBook(book);
-            loan.setUser(user);
-            loan.setLoanDate(LocalDateTime.now());
-            loan.setStatus(LoanStatus.ACTIVE);
-            library.returnLoan(loan);
-        });
-        assertEquals("Loan not found", exception.getMessage());
+        loan = new Loan();
+        loan.setBook(book);
+        loan.setUser(user);
+        loan.setLoanDate(LocalDateTime.now());
+        loan.setStatus(LoanStatus.ACTIVE);
+        assertNull(library.returnLoan(loan));
+
     }
     //Verifica que la fecha que se devolvió el prestamos coincida con la fecha actual
     @Test

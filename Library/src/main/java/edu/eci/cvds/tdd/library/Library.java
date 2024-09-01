@@ -3,7 +3,8 @@ package edu.eci.cvds.tdd.library;
 import edu.eci.cvds.tdd.library.book.Book;
 import edu.eci.cvds.tdd.library.loan.Loan;
 import edu.eci.cvds.tdd.library.user.User;
-
+import edu.eci.cvds.tdd.library.loan.LoanStatus;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,17 +35,29 @@ public class Library {
      * @return true if the book was stored false otherwise.
      */
     public boolean addBook(Book book) {
-        if(book.getIsbn().equals("") || book.getAuthor().equals("") || book.getTittle().equals("")) {
+        try{
+            if (book == null || book.getTittle() == null || book.getTittle().isEmpty() || book.getAuthor() == null || book.getAuthor().isEmpty()
+                    || book.getIsbn() == null || book.getIsbn().isEmpty()) {
+                return false;
+            }
+            /*if (books.containsKey(book)) {
+                //se añade el libro
+                books.put(book, books.get(book)+ 1);
+            } else {
+                //se agrega con una cantidad inicial de 1
+                books.put(book, 1);
+            }*/
+            for(Book b : books.keySet()){
+                if (b.equals(book)) {
+                    books.put(b, books.get(b) + 1);
+                    return true;
+                }
+            }
+            books.put(book, 1);
+            return true;
+        }catch(Exception e){
             return false;
         }
-        if (books.containsKey(book)) {
-            //se añade el libro
-            books.put(book, books.get(book)+ 1);
-        } else {
-            //se agrega con una cantidad inicial de 1
-            books.put(book, 1);
-        }
-        return true;
     }
 
 
@@ -62,7 +75,45 @@ public class Library {
      */
     public Loan loanABook(String userId, String isbn) {
         //TODO Implement the login of loan a book to a user based on the UserId and the isbn.
-        return null;
+        User userFound = null;
+        Book bookFound = null;
+        boolean notAvailable = false;
+        boolean sameLean = false;
+        //Verifica que el usuario exista
+        for(User u : users){
+            if (u.getId().equals(userId)) {
+                userFound=u;
+            }
+        }
+        //Verifica que el libro exista y que si existe, esté disponible
+        for(Book b : books.keySet()){
+            if (b.getIsbn().equals(isbn)) {
+                bookFound=b;
+                if (books.get(bookFound) == 0){
+                    notAvailable = true;
+                }
+            }
+        }
+        //Verifica que el prestamo no sea el mismo para el mismo usuario
+        for(Loan l : loans){
+            if (l.getStatus() == LoanStatus.ACTIVE && l.getUser().getId().equals(userId) && l.getBook().getIsbn().equals(isbn)) {
+                sameLean = true;
+            }
+        }
+        //Verifica que todos los requerimientos se cumplan
+        if (bookFound == null || userFound == null || notAvailable || sameLean) {
+            return null;
+        }
+        //Decrementa el libro
+        books.put(bookFound, books.get(bookFound) - 1);
+        //Crea el prestamo y le asigna el usuario, libro y estado activo
+        Loan newLoan = new Loan();
+        newLoan.setUser(userFound);
+        newLoan.setBook(bookFound);
+        newLoan.setStatus(LoanStatus.ACTIVE);
+        newLoan.setLoanDate(LocalDateTime.now());
+        loans.add(newLoan);
+        return newLoan;
     }
 
     /**
@@ -75,7 +126,25 @@ public class Library {
      */
     public Loan returnLoan(Loan loan) {
         //TODO Implement the login of loan a book to a user based on the UserId and the isbn.
-        return null;
+        boolean exist = false;
+        boolean isReturned = false;
+        //Verificar que el prestamo existe
+        for(Loan l : loans){
+            if (l.equals(loan)) {
+                exist = true;
+                if (l.getStatus() == LoanStatus.RETURNED) isReturned = true;
+            }
+        }
+        if(!exist || isReturned){
+            return null;
+        }
+        Book book = loan.getBook();
+        if(books.containsKey(book)){
+            books.put(book, books.get(book) + 1);
+        }
+        loan.setStatus(LoanStatus.RETURNED);
+        loan.setReturnDate(LocalDateTime.now());
+        return loan;
     }
     public boolean addUser(User user) {
         return users.add(user);
