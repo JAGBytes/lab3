@@ -31,7 +31,6 @@ public class Library {
      * operation is successful false otherwise.
      *
      * @param book The book to store in the map.
-     *
      * @return true if the book was stored false otherwise.
      */
     public boolean addBook(Book book) {
@@ -48,8 +47,7 @@ public class Library {
      * the loan date should be the current date.
      *
      * @param userId id of the user.
-     * @param isbn book identification.
-     *
+     * @param isbn   book identification.
      * @return The new created loan.
      */
     public Loan loanABook(String userId, String isbn) {
@@ -63,7 +61,6 @@ public class Library {
      * date should be the current date, validate that the loan exist.
      *
      * @param loan loan to return.
-     *
      * @return the loan with the RETURNED status.
      */
     public Loan returnLoan(Loan loan) {
@@ -81,4 +78,11 @@ public class Library {
         return loans;
     }
 
+
+    public Map<Book, Integer> getBooks() {
+        return books;
+    }
+    public List<Loan> getLoans() {
+        return loans;
+    }
 }
