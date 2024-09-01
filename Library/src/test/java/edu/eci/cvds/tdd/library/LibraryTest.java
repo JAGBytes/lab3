@@ -13,17 +13,25 @@ import java.time.LocalDateTime;
 public class LibraryTest {
     Library library;
     Book book;
-    User user;
+    User user,user2,user3;
     Loan loan;
     @BeforeEach
     public void setUp(){
         library = new Library();
         book = new Book("Cien anios de soledad","Gabriel Garcia Marquez","L123");
         user = new User();
+        user2 = new User();
+        user3 = new User();
         loan = new Loan();
         user.setName("Camila");
         user.setId("U123");
+        user2.setName("pedro");
+        user2.setId("Z323");
+        user3.setName("pablito");
+        user3.setId("T999");
         library.addUser(user);
+        library.addUser(user2);
+        library.addUser(user3);
     }
 /*ADD A BOOK*/
     //pasa
