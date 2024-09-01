@@ -74,10 +74,14 @@ public class LibraryTest {
     }*/
 
 /*LEAN A BOOK*/
-
+    
     @Test
     public void AddNewLeanSuccessfully(){
-
+        User user = new User();
+        user.setName("jorge");
+        user.setId("U711");
+        Book book = new Book("Brandon Sanderson", "Palabras Radiantes", "R200");
+        assertNotNull(library.loanABook(user.getId(), book.getIsbn()));
     }
     @Test
     public void LeanABookNotAvailable(){
