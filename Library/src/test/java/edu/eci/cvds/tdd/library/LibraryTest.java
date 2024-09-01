@@ -169,7 +169,19 @@ public class LibraryTest {
     }
     @Test
     public void VerifyReturnedBookIncrement(){
-
+        Book book1 = new Book("Brandon Sanderson", "Palabras Radiantes", "R200");
+        Book book2 = new Book("Brandon Sanderson", "El camino de los reyes", "R200");
+        Book book3 = new Book("Brandon Sanderson", "Juramentada", "R200");
+        Loan loan1 = library.loanABook(user.getId(),book1.getIsbn());
+        Loan loan2 = library.loanABook(user2.getId(), book2.getIsbn());
+        Loan loan3 = library.loanABook(user3.getId(), book3.getIsbn());
+        assertEquals(0,library.getBooks().get(book1));
+        library.returnLoan(loan1);
+        assertEquals(1,library.getBooks().get(book1));
+        library.returnLoan(loan2);
+        assertEquals(2,library.getBooks().get(book1));
+        library.returnLoan(loan3);
+        assertEquals(3,library.getBooks().get(book1));
     }
     @Test
     public void LoanDoesNotExist(){
