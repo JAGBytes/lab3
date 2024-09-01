@@ -49,8 +49,10 @@ public class LibraryTest {
     }
     //Nodeberia pasar
     @Test
-    public void ParameterWithOtherObject(){
-
+    public void VerifyThatBooksWithEmptyParametersCannotBeAdded(){
+        assertFalse(library.addBook(new Book("El necronomicon","","")));
+        assertFalse(library.addBook(new Book("","Abdul Alhazred","")));
+        assertFalse(library.addBook(new Book("","","G666")));
     }
     //No deberia pasar, verifica que no sea valido parametros nulos
     @Test
