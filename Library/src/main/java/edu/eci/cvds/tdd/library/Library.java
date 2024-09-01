@@ -34,22 +34,34 @@ public class Library {
      * operation is successful false otherwise.
      *
      * @param book The book to store in the map.
-     *
      * @return true if the book was stored false otherwise.
      */
     public boolean addBook(Book book) {
-        //TODO Implement the logic to add a new book into the map.
         try{
-            if (book == null || book.getTittle() == null || book.getTittle().isEmpty() || book.getAuthor() == null || book.getAuthor().isEmpty()
-            || book.getIsbn() == null || book.getIsbn().isEmpty()) {
-                return false;
-            }
-            books.put(book, books.getOrDefault(book, 0) + 1);
-            return true;
-        }catch(Exception e){
-            return false;
-        }
+              if (book == null || book.getTittle() == null || book.getTittle().isEmpty() || book.getAuthor() == null || book.getAuthor().isEmpty()
+                      || book.getIsbn() == null || book.getIsbn().isEmpty()) {
+                  return false;
+              }
+              /*if (books.containsKey(book)) {
+                  //se añade el libro
+                  books.put(book, books.get(book)+ 1);
+              } else {
+                  //se agrega con una cantidad inicial de 1
+                  books.put(book, 1);
+              }*/
+              for(Book b : books.keySet()){
+                  if (b.equals(book)) {
+                      books.put(b, books.get(b) + 1);
+                      return true;
+                  }
+              }
+              books.put(book, 1);
+              return true;
+          }catch(Exception e){
+              return false;
+          }
     }
+
 
     /**
      * This method creates a new loan with for the User identify by the userId and the book identify by the isbn,
@@ -60,8 +72,7 @@ public class Library {
      * the loan date should be the current date.
      *
      * @param userId id of the user.
-     * @param isbn book identification.
-     *
+     * @param isbn   book identification.
      * @return The new created loan.
      */
     public Loan loanABook(String userId, String isbn) {
@@ -113,7 +124,6 @@ public class Library {
      * date should be the current date, validate that the loan exist.
      *
      * @param loan loan to return.
-     *
      * @return the loan with the RETURNED status.
      */
     public Loan returnLoan(Loan loan) {
@@ -138,7 +148,6 @@ public class Library {
         loan.setReturnDate(LocalDateTime.now());
         return loan;
     }
-
     public boolean addUser(User user) {
         return users.add(user);
     }
@@ -148,5 +157,4 @@ public class Library {
     public List<Loan> getLoans() {
         return loans;
     }
-
 }
