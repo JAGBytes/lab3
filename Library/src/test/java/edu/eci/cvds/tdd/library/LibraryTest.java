@@ -157,7 +157,11 @@ public class LibraryTest {
 
     @Test
     public void VerifyReturnedStatusLoan(){
-
+        Book book1 = new Book("Brandon Sanderson", "Palabras Radiantes", "R200");
+        Loan loan1 = library.loanABook(user.getId(),book1.getIsbn());
+        assertEquals(LoanStatus.ACTIVE,loan1.getStatus());
+        library.returnLoan(loan1);
+        assertEquals(LoanStatus.RETURNED,loan1.getStatus());
     }
     @Test
     public void VerifyReturnedBookIncrement(){
