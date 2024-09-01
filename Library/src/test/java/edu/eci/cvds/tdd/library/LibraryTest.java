@@ -148,6 +148,14 @@ public class LibraryTest {
         Loan isloan = library.loanABook("U432","L895");
         assertEquals(isloan.getStatus(), LoanStatus.ACTIVE);
     }
+    @Test
+    public void UserCannotLoanSameBookTwiceAtSameTime() {
+        Loan loan = library.loanABook(user.getId(), book.getIsbn());
+        LibraryException exception = assertThrows(LibraryException.class, () -> {
+            library.loanABook(user.getId(), book.getIsbn());
+        });
+        assertEquals("Loan not found", exception.getMessage());
+    }
 
 /*RETURN LOAN*/
 
