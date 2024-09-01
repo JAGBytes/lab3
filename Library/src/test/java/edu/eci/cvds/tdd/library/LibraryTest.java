@@ -3,11 +3,10 @@ import edu.eci.cvds.tdd.library.book.*;
 import edu.eci.cvds.tdd.library.loan.Loan;
 import edu.eci.cvds.tdd.library.loan.LoanStatus;
 import edu.eci.cvds.tdd.library.user.User;
-import edu.eci.cvds.tdd.library.LibraryException;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
 
 public class LibraryTest {
@@ -44,7 +43,7 @@ public class LibraryTest {
     //No deberia pasar, verifica que no sea valido parametros nulos
     @Test
     public void SendNullBook(){
-        assertFalse(!library.addBook(null));
+        assertFalse(library.addBook(null));
 
     }
 
@@ -76,21 +75,26 @@ public class LibraryTest {
 
 
     }
+    @Test
+    //Prestar paramateros vacios
+    public void nullParemeters(){
+        User newUser = new User();
+        newUser.setId("U432");
+        newUser.setName("Jorge");
+        library.addUser(newUser);
+        Loan isloan = library.loanABook("U432",null);
+        assertNull(isloan);
+        Loan isloan2 = library.loanABook(null,null);
+        assertNull(isloan2);
+        Loan isloan3 = library.loanABook(null,"L123");
+        assertNull(isloan3);
+    }
     //Añade Usuarios y libros que no existen, no deberia pasar
-    //Debería lanzar una excepcion que indique que el usuario o libro no se encuentra
     @Test
     public void VerifyParametersNotFound(){
         Book newBook = new Book("IT","Stephen King","L432");
-        //Enviar un usuario que no existe
-        LibraryException exception = assertThrows(LibraryException.class, () -> {
-            library.loanABook("U895","L432");
-        });
-        assertEquals("User not found", exception.getMessage());
-        //Enviar un libro que no existe
-        LibraryException exception2 = assertThrows(LibraryException.class, () -> {
-            library.loanABook("U123","L000");
-        });
-        assertEquals("Book not found", exception2.getMessage());
+        assertNull(library.loanABook("U895","L432"));
+        assertNull(library.loanABook("U123","L000"));
     }
     //Verifica que el monto del libro prestado se decremente
     @Test
@@ -144,7 +148,7 @@ public class LibraryTest {
         library.addUser(newUser);
         Loan isloan = library.loanABook("U534","L989");
         Loan returnedLoan = library.returnLoan(isloan);
-        assertEquals(returnedLoan.getReturnDate(), LocalDate.now());
+        assertEquals(returnedLoan.getReturnDate(), LocalDateTime.now());
     }
     //Verifica que el prestamo coincida con el usuario
     @Test
@@ -174,6 +178,31 @@ public class LibraryTest {
         Book leanBook = returnedLoan.getBook();
         assertEquals(library.getBooks().get(leanBook), 1);
 
+    }
+    //Verifica que un libro prestado que acabó de devolverse, pueda volver a prestarse
+    @Test
+    public void LendABookThatWasReturned(){
+        User newUser = new User();
+        newUser.setId("U634");
+        newUser.setName("Camilo");
+        library.addUser(newUser);
+        library.addBook(book);
+        Loan l = library.loanABook("U123","L123");
+        Loan l2 = library.returnLoan(l);
+        Loan l3 = library.loanABook(newUser.getId(), l2.getBook().getIsbn());
+        assertNotNull(l3);
+    }
+    //Verificar que el prestamo que se va a devolver este en estado ACTIVE antes de ser devuelto
+    @Test
+    public void LendABookThatWasNotReturned(){
+        User newUser = new User();
+        newUser.setId("U634");
+        newUser.setName("Maria");
+        library.addUser(newUser);
+        Loan l = library.loanABook("U123","L123");
+        Loan l2 = library.returnLoan(l);
+        Loan l3 = library.returnLoan(l2);
+        assertNull(l3);
     }
     
 
