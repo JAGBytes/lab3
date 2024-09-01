@@ -37,7 +37,8 @@ public class LibraryTest {
     //pasa
     @Test
     public void AddanExistingBookSuccessfully(){
-
+        library.addBook(book);
+        assertTrue(library.addBook(book));
     }
     //pasa
     @Test
