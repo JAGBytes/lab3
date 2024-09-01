@@ -185,8 +185,15 @@ public class LibraryTest {
     }
     @Test
     public void LoanDoesNotExist(){
-
-
+        LibraryException exception = assertThrows(LibraryException.class, () -> {
+            loan = new Loan();
+            loan.setBook(book);
+            loan.setUser(user);
+            loan.setLoanDate(LocalDateTime.now());
+            loan.setStatus(LoanStatus.ACTIVE);
+            library.returnLoan(loan);
+        });
+        assertEquals("Loan not found", exception.getMessage());
     }
     //Verifica que la fecha que se devolvió el prestamos coincida con la fecha actual
     @Test
