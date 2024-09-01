@@ -67,18 +67,9 @@ public class Library {
         //TODO Implement the login of loan a book to a user based on the UserId and the isbn.
         return null;
     }
-
     public boolean addUser(User user) {
         return users.add(user);
     }
-    public Map<Book, Integer> getBooks() {
-        return books;
-    }
-    public List<Loan> getLoans() {
-        return loans;
-    }
-
-
     public Map<Book, Integer> getBooks() {
         return books;
     }
