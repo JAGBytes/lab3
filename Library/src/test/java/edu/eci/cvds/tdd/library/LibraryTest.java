@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 
 import java.time.LocalDateTime;
 
+
 public class LibraryTest {
     Library library;
     Book book;
@@ -107,6 +108,7 @@ public class LibraryTest {
         library.addUser(newUser);
         Loan isloan = library.loanABook("U432","L432");
         assertEquals(0,library.getBooks().get(newBook));
+
     }
     //Verifica que el estado del prestamo esté activo
     @Test
@@ -125,7 +127,6 @@ public class LibraryTest {
 
     @Test
     public void VerifyReturnedStatusLoan(){
-
 
     }
     @Test
@@ -149,6 +150,7 @@ public class LibraryTest {
         Loan isloan = library.loanABook("U534","L989");
         Loan returnedLoan = library.returnLoan(isloan);
         assertEquals(returnedLoan.getReturnDate(), LocalDateTime.now());
+
     }
     //Verifica que el prestamo coincida con el usuario
     @Test
@@ -177,6 +179,7 @@ public class LibraryTest {
         Loan returnedLoan = library.returnLoan(isloan);
         Book leanBook = returnedLoan.getBook();
         assertEquals(library.getBooks().get(leanBook), 1);
+
 
     }
     //Verifica que un libro prestado que acabó de devolverse, pueda volver a prestarse
