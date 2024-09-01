@@ -91,9 +91,16 @@ public class LibraryTest {
         assertEquals("Book not available", exception.getMessage());
     }
     @Test
-    public void VerifyBookWithDiferentNameButSameAuthor(){
-
-
+    public void VerifyThatAllBooksOfTheSameIdCanBeLeant(){
+        Book book1 = new Book("Brandon Sanderson", "Palabras Radiantes", "R200");
+        Book book2 = new Book("Brandon Sanderson", "El camino de los reyes", "R200");
+        Book book3 = new Book("Brandon Sanderson", "Juramentada", "R200");
+        Loan loan1 = library.loanABook(user.getId(),book1.getIsbn());
+        Loan loan2 = library.loanABook(user2.getId(), book2.getIsbn());
+        Loan loan3 = library.loanABook(user3.getId(), book3.getIsbn());
+        assertNotNull(loan3);
+        assertNotNull(loan2);
+        assertNotNull(loan1);
     }
     @Test
     //Prestar paramateros vacios
