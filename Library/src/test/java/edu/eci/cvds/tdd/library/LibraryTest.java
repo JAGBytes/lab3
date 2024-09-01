@@ -44,7 +44,8 @@ public class LibraryTest {
     //pasa
     @Test
     public void AddNewBookSuccessfully(){
-
+        Book book1 = new Book("Brandon Sanderson", "El Camino de los Reyes", "C113");
+        assertTrue(library.addBook(book1));
     }
     //Nodeberia pasar
     @Test
