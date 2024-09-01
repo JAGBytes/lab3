@@ -43,12 +43,15 @@ public class LibraryTest {
     //pasa
     @Test
     public void AddNewBookSuccessfully(){
-
+        Book book1 = new Book("Brandon Sanderson", "El Camino de los Reyes", "C113");
+        assertTrue(library.addBook(book1));
     }
     //Nodeberia pasar
     @Test
-    public void ParameterWithOtherObject(){
-
+    public void VerifyThatBooksWithEmptyParametersCannotBeAdded(){
+        assertFalse(library.addBook(new Book("El necronomicon","","")));
+        assertFalse(library.addBook(new Book("","Abdul Alhazred","")));
+        assertFalse(library.addBook(new Book("","","G666")));
     }
     //No deberia pasar, verifica que no sea valido parametros nulos
     @Test
