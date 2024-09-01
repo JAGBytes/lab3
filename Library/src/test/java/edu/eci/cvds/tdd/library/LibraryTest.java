@@ -74,7 +74,7 @@ public class LibraryTest {
     }*/
 
 /*LEAN A BOOK*/
-    
+
     @Test
     public void AddNewLeanSuccessfully(){
         User user = new User();
@@ -85,8 +85,11 @@ public class LibraryTest {
     }
     @Test
     public void LeanABookNotAvailable(){
-
-
+        library.loanABook(user.getId(), book.getIsbn());
+        LibraryException exception = assertThrows(LibraryException.class, () -> {
+            library.loanABook(user2.getId(), book.getIsbn());
+        });
+        assertEquals("Book not available", exception.getMessage());
     }
     @Test
     public void VerifyBookWithDiferentNameButSameAuthor(){
