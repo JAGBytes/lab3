@@ -38,7 +38,7 @@ public class LibraryTest {
     @Test
     public void AddanExistingBookSuccessfully(){
         library.addBook(book);
-        Book book2 = new Book("El coronel no tiene quien le escriba","Gabriel Garcia Marquez","L123");
+        Book book2 = new Book("Cien anios de soledad","Gabriel Garcia Marquez","L123");
         library.addBook(book2);
         assertEquals(2,library.getBooks().get(book));
     }
@@ -61,8 +61,22 @@ public class LibraryTest {
         assertFalse(library.addBook(null));
 
     }
+    //Enviar un libro con atributos nulos
+    @Test
+    public void sendNullAttributes() {
+        Book book2 = new Book(null,"Mario Mendoza","L478");
+        assertFalse(library.addBook(book2));
+        Book book3 = new Book("Lady Masacre",null,"L478");
+        assertFalse(library.addBook(book3));
+        Book book4 = new Book("Lady Masacre","Mario Mendoza",null);
+        assertFalse(library.addBook(book4));
+        Book book5 = new Book(null,null,null);
+        assertFalse(library.addBook(book5));
+    }
 
-/*LEAN A BOOK*/
+
+
+    /*LEAN A BOOK*/
 
     @Test
     public void AddNewLeanSuccessfully()  {
@@ -156,6 +170,7 @@ public class LibraryTest {
         assertEquals("Loan not found", exception.getMessage());*/
         assertNull(library.loanABook(user.getId(), book.getIsbn()));
     }
+
 
 /*RETURN LOAN*/
 
@@ -265,6 +280,10 @@ public class LibraryTest {
         Loan l2 = library.returnLoan(l);
         Loan l3 = library.returnLoan(l2);
         assertNull(l3);
+    }
+    @Test
+    public void sendNullLoan(){
+        assertNull(library.returnLoan(null));
     }
     
 
