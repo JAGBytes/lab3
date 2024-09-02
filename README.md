@@ -186,7 +186,7 @@ return loan;
 ```
 </li>
 </ul></li>
-<h3>COBERTURA</h3>
+<li><h3>COBERTURA</h3></li>
 Agregamos la dependencia de Jacoco con la última versión reciente al pom.xml. Luego, compilamos el proyecto con Maven usando el comando mvn package y observamos que el archivo index.html se generó en target/site. 
 Si lo abrimos, podemos ver un informe detallado de las pruebas realizadas.
 
@@ -198,7 +198,7 @@ Además, se muestra un 80% de cobertura en "Missed Branches", lo cual indica que
 <img src="jacoco2.png" width="600">
 
 
-<h3>SONARQUBE</h3>
+<li><h3>SONARQUBE</h3></li>
 </ol>
 <h2>CONCLUSIONES</h2>
 <h2>BIBLIOGRAFÍA</h2>
