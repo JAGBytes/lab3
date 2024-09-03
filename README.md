@@ -77,22 +77,18 @@ Además, se establecen algunas restricciones adicionales: si se encuentran valor
 
 ```
 public boolean addBook(Book book) {
-        try{
-            if (book == null || book.getTittle() == null || book.getTittle().isEmpty() || book.getAuthor() == null || book.getAuthor().isEmpty()
-                    || book.getIsbn() == null || book.getIsbn().isEmpty()) {
+        if (book == null || book.getTittle() == null || book.getTittle().isEmpty() || book.getAuthor() == null || book.getAuthor().isEmpty()
+                || book.getIsbn() == null || book.getIsbn().isEmpty()) {
                 return false;
             }
-            for(Book b : books.keySet()){
-                if (b.equals(book)) {
-                    books.put(b, books.get(b) + 1);
-                    return true;
-                }
+        for(Book b : books.keySet()){
+            if (b.equals(book)) {
+                books.put(b, books.get(b) + 1);
+                return true;
             }
-            books.put(book, 1);
-            return true;
-        }catch(Exception e){
-            return false;
         }
+        books.put(book, 1);
+        return true;
     }
 ```
 <b>loanABook(Loan loan)</b>
@@ -106,7 +102,7 @@ Si alguna de las siguientes condiciones se cumple: el préstamo no existe, el us
 Si todas las condiciones se cumplen correctamente, es decir, el usuario y el libro son válidos, el libro está disponible y no existe un préstamo activo con los mismos identificadores, creamos un nuevo préstamo. Asignamos el usuario y el libro al nuevo préstamo, lo agregamos a la lista de préstamos y lo retornamos.
 
 ```
-public Loan loanABook(String userId, String isbn) {
+ public Loan loanABook(String userId, String isbn) {
         //TODO Implement the login of loan a book to a user based on the UserId and the isbn.
         User userFound = null;
         Book bookFound = null;
@@ -114,40 +110,45 @@ public Loan loanABook(String userId, String isbn) {
         boolean sameLean = false;
         //Verifica que el usuario exista
         for(User u : users){
-            if (u.getId().equals(userId)) {
+            String id = u.getId();
+            if (id != null && id.equals(userId)) {
                 userFound=u;
             }
         }
         //Verifica que el libro exista y que si existe, esté disponible
         for(Book b : books.keySet()){
-            if (b.getIsbn().equals(isbn)) {
+            String id = b.getIsbn();
+            if (id.equals(isbn)) {
                 bookFound=b;
                 if (books.get(bookFound) == 0){
                     notAvailable = true;
                 }
             }
         }
-        //Verifica que el prestamo no sea el mismo para el mismo usuario
-        for(Loan l : loans){
-            if (l.getStatus() == LoanStatus.ACTIVE && l.getUser().getId().equals(userId) && l.getBook().getIsbn().equals(isbn)) {
-                sameLean = true;
+        if (userFound != null && bookFound != null) {
+            //Verifica que el prestamo no sea el mismo para el mismo usuario
+            for (Loan l : loans) {
+                if (l.getStatus() == LoanStatus.ACTIVE && l.getUser().getId().equals(userId) && l.getBook().getIsbn().equals(isbn)) {
+                    sameLean = true;
+                }
             }
+            //Verifica que todos los requerimientos se cumplan
+            if (notAvailable || sameLean) {
+                return null;
+            }
+            //Decrementa el libro
+            books.put(bookFound, books.get(bookFound) - 1);
+            //Crea el prestamo y le asigna el usuario, libro y estado activo
+            Loan newLoan = new Loan();
+            newLoan.setUser(userFound);
+            newLoan.setBook(bookFound);
+            newLoan.setStatus(LoanStatus.ACTIVE);
+            newLoan.setLoanDate(LocalDateTime.now());
+            loans.add(newLoan);
+            return newLoan;
         }
-        //Verifica que todos los requerimientos se cumplan
-        if (bookFound == null || userFound == null || notAvailable || sameLean) {
-            return null;
-        }
-        //Decrementa el libro
-        books.put(bookFound, books.get(bookFound) - 1);
-        //Crea el prestamo y le asigna el usuario, libro y estado activo
-        Loan newLoan = new Loan();
-        newLoan.setUser(userFound);
-        newLoan.setBook(bookFound);
-        newLoan.setStatus(LoanStatus.ACTIVE);
-        newLoan.setLoanDate(LocalDateTime.now());
-        loans.add(newLoan);
-        return newLoan;
-    }
+        return null;
+    }         
 ```
 
 <b>returnLoan(Loan loan)</b>
@@ -162,27 +163,27 @@ Si todas las condiciones se cumplen correctamente, es decir, el préstamo existe
 
 ```
 public Loan returnLoan(Loan loan) {
-//TODO Implement the login of loan a book to a user based on the UserId and the isbn.
-boolean exist = false;
-boolean isReturned = false;
-//Verificar que el prestamo existe
-for(Loan l : loans){
-if (l.equals(loan)) {
-exist = true;
-if (l.getStatus() == LoanStatus.RETURNED) isReturned = true;
-}
-}
-if(!exist || isReturned){
-return null;
-}
-Book book = loan.getBook();
-if(books.containsKey(book)){
-books.put(book, books.get(book) + 1);
-}
-loan.setStatus(LoanStatus.RETURNED);
-loan.setReturnDate(LocalDateTime.now());
-return loan;
-}
+        //TODO Implement the login of loan a book to a user based on the UserId and the isbn.
+        boolean exist = false;
+        boolean isReturned = false;
+        //Verificar que el prestamo existe
+        for (Loan l : loans) {
+            if (l.equals(loan)) {
+                exist = true;
+                if (l.getStatus() == LoanStatus.RETURNED) isReturned = true;
+            }
+        }
+        if (exist && !isReturned) {
+            Book book = loan.getBook();
+            if (books.containsKey(book)) {
+                books.put(book, books.get(book) + 1);
+                loan.setStatus(LoanStatus.RETURNED);
+                loan.setReturnDate(LocalDateTime.now());
+                return loan;
+            }
+        }
+        return null;
+    }
 ```
 </li>
 </ul></li>
@@ -197,6 +198,11 @@ Además, se muestra un 80% de cobertura en "Missed Branches", lo cual indica que
 
 <img src="jacoco2.png" width="600">
 
+Decidimos mejorar la cobertura, por ende llegamos a implementar un total de 30 pruebas las cuales cubre todos los casos posibles
+
+<img src="jacoco3.png" width="600">
+
+Lo anterior nos permitió desarrollar un código más robusto basado en pruebas, ya que, mediante esta herramienta, pudimos identificar más casos en los que cada método podría fallar o tener éxito.
 
 <li><h3>SONARQUBE</h3></li>
 </ol>

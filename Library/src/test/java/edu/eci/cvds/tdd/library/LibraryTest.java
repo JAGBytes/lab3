@@ -54,6 +54,12 @@ public class LibraryTest {
         assertFalse(library.addBook(new Book("El necronomicon","","")));
         assertFalse(library.addBook(new Book("","Abdul Alhazred","")));
         assertFalse(library.addBook(new Book("","","G666")));
+        assertFalse(library.addBook(new Book("","","")));
+        assertFalse(library.addBook(new Book("El necronomicon","Abdul Alhazred","")));
+        assertFalse(library.addBook(new Book("","Abdul Alhazred","L999")));
+        assertFalse(library.addBook(new Book("El necronomicon","Abdul Alhazred","")));
+        assertFalse(library.addBook(new Book("El necronomicon","","L999")));
+
     }
     //No deberia pasar, verifica que no sea valido parametros nulos
     @Test
@@ -73,7 +79,6 @@ public class LibraryTest {
         Book book5 = new Book(null,null,null);
         assertFalse(library.addBook(book5));
     }
-
 
 
     /*LEAN A BOOK*/
@@ -145,6 +150,7 @@ public class LibraryTest {
         Book newBook = new Book("IT","Stephen King","L432");
         library.addBook(newBook);
         library.addUser(newUser);
+        assertEquals(1,library.getBooks().get(newBook));
         Loan isloan = library.loanABook("U432","L432");
         assertEquals(0,library.getBooks().get(newBook));
 
@@ -170,6 +176,79 @@ public class LibraryTest {
         assertEquals("Loan not found", exception.getMessage());*/
         assertNull(library.loanABook(user.getId(), book.getIsbn()));
     }
+    @Test
+    public void verifySameLoan(){
+        User u = new User();
+        u.setId("U432");
+        u.setName("Andres");
+        Book b = new Book("Harry Potter","J.K Rowling","L895");
+        library.addBook(b);
+        library.addUser(u);
+        Loan l = library.loanABook(u.getId(),b.getIsbn());
+        assertEquals(LoanStatus.ACTIVE,l.getStatus());
+        assertEquals(u.getId(),l.getUser().getId());
+        assertEquals(b.getIsbn(),l.getBook().getIsbn());
+        Loan l2 = library.loanABook(u.getId(),b.getIsbn());
+        assertNull(l2);
+    }
+    @Test
+    public void differentUserButSameLoanAndBook(){
+        User u = new User();
+        u.setId("U432");
+        u.setName("Andres");
+        User u2 = new User();
+        u2.setId("U888");
+        u2.setName("Andrea");
+        Book b = new Book("Harry Potter","J.K Rowling","L895");
+        library.addBook(b);
+        library.addBook(b);
+        library.addUser(u);
+        library.addUser(u2);
+        Loan l = library.loanABook(u.getId(),b.getIsbn());
+        Loan l2 = library.loanABook(u2.getId(),b.getIsbn());
+        assertNotNull(l2);
+    }
+    @Test
+    public void differentBookButSameLoanAndUser(){
+        User u = new User();
+        u.setId("U432");
+        u.setName("Andres");
+        Book b = new Book("Harry Potter","J.K Rowling","L895");
+        Book b2 = new Book("Los juegos del hambre","Suzzane Collings","L888");
+        library.addBook(b);
+        library.addUser(u);
+        library.addBook(b2);
+        Loan l = library.loanABook(u.getId(),b.getIsbn());
+        Loan l2 = library.loanABook(u.getId(),b2.getIsbn());
+        assertNotNull(l2);
+    }
+    @Test
+    public void userWithNullId(){
+        User u = new User();
+        u.setId(null);
+        u.setName("Andres");
+        User u2 = new User();
+        u2.setId("U777");
+        u2.setName("Juan");
+        library.addUser(u);
+        library.addUser(u2);
+        library.addBook(book);
+        Loan l = library.loanABook(u2.getId(), book.getIsbn());
+        assertNotNull(l);
+    }
+    @Test
+    public void availableButSameLean(){
+        User u = new User();
+        u.setId("U555");
+        u.setName("Andres");
+        library.addUser(u);
+        library.addBook(book);
+        library.addBook(book);
+        Loan l = library.loanABook(u.getId(),book.getIsbn());
+        assertEquals(1,library.getBooks().get(book));
+        Loan l2 = library.loanABook(u.getId(),book.getIsbn());
+        assertNull(l2);
+    }
 
 
 /*RETURN LOAN*/
@@ -178,8 +257,11 @@ public class LibraryTest {
     public void VerifyReturnedStatusLoan(){
         Book book1 = new Book("Brandon Sanderson", "Palabras Radiantes", "R200");
         library.addBook(book1);
+        library.addBook(book);
         Loan loan1 = library.loanABook(user.getId(),book1.getIsbn());
         assertEquals(LoanStatus.ACTIVE,loan1.getStatus());
+        Loan loan2 = library.loanABook(user.getId(),book.getIsbn());
+        assertEquals(LoanStatus.ACTIVE,loan2.getStatus());
         library.returnLoan(loan1);
         assertEquals(LoanStatus.RETURNED,loan1.getStatus());
     }
@@ -250,11 +332,10 @@ public class LibraryTest {
         library.addBook(newBook);
         library.addUser(newUser);
         Loan isloan = library.loanABook("U436","L448");
+        assertEquals(library.getBooks().get(isloan.getBook()), 0);
         Loan returnedLoan = library.returnLoan(isloan);
         Book leanBook = returnedLoan.getBook();
         assertEquals(library.getBooks().get(leanBook), 1);
-
-
     }
     //Verifica que un libro prestado que acabó de devolverse, pueda volver a prestarse
     @Test
@@ -276,6 +357,7 @@ public class LibraryTest {
         newUser.setId("U634");
         newUser.setName("Maria");
         library.addUser(newUser);
+        library.addBook(book);
         Loan l = library.loanABook("U123","L123");
         Loan l2 = library.returnLoan(l);
         Loan l3 = library.returnLoan(l2);
@@ -285,6 +367,29 @@ public class LibraryTest {
     public void sendNullLoan(){
         assertNull(library.returnLoan(null));
     }
-    
+    @Test
+    public void getTheCorrectNumberOfLoans() {
+        library.addBook(book);
+        library.loanABook(user.getId(), book.getIsbn());
+        assertEquals(1,library.getLoans().size());
+    }
+    @Test
+    public void addingLoadCorrectly(){
+        loan.setUser(user);
+        loan.setBook(book);
+        loan.setLoanDate(LocalDateTime.now());
+        assertTrue(library.addLoan(loan));
+        assertEquals(library.getLoans().size(),1);
+    }
+    @Test
+    public void CorrectLoanButNotExistBook(){
+        Loan l = new Loan();
+        l.setBook(book);
+        l.setUser(user);
+        l.setStatus(LoanStatus.ACTIVE);
+        library.addLoan(l);
+        Loan l2 = library.returnLoan(l);
+        assertNull(l2);
+    }
 
 }
