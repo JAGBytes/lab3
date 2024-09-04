@@ -83,26 +83,25 @@ public class Library {
             }
         }
         if (userFound != null && bookFound != null) {
-            //Verifica que el prestamo no sea el mismo para el mismo usuario
+            //Busca que el prestamo no sea el mismo para el mismo usuario y que el prestamo no este en ACTIVE
             for (Loan l : loans) {
                 if (l.getStatus() == LoanStatus.ACTIVE && l.getUser().getId().equals(userId) && l.getBook().getIsbn().equals(isbn)) {
                     sameLean = true;
                 }
             }
-            //Verifica que todos los requerimientos se cumplan
-            if (notAvailable || sameLean) {
-                return null;
+            //Verifica que el usuario no tenga el mismo prestamo y este disponible
+            if (!sameLean && !notAvailable) {
+                //Decrementa el libro
+                books.put(bookFound, books.get(bookFound) - 1);
+                //Crea el prestamo y le asigna el usuario, libro y estado activo
+                Loan newLoan = new Loan();
+                newLoan.setUser(userFound);
+                newLoan.setBook(bookFound);
+                newLoan.setStatus(LoanStatus.ACTIVE);
+                newLoan.setLoanDate(LocalDateTime.now());
+                addLoan(newLoan);
+                return newLoan;
             }
-            //Decrementa el libro
-            books.put(bookFound, books.get(bookFound) - 1);
-            //Crea el prestamo y le asigna el usuario, libro y estado activo
-            Loan newLoan = new Loan();
-            newLoan.setUser(userFound);
-            newLoan.setBook(bookFound);
-            newLoan.setStatus(LoanStatus.ACTIVE);
-            newLoan.setLoanDate(LocalDateTime.now());
-            loans.add(newLoan);
-            return newLoan;
         }
         return null;
     }

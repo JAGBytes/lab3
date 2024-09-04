@@ -116,52 +116,51 @@ Si todas las condiciones se cumplen correctamente, es decir, el usuario y el lib
 
 ```java
  public Loan loanABook(String userId, String isbn) {
-        //TODO Implement the login of loan a book to a user based on the UserId and the isbn.
-        User userFound = null;
-        Book bookFound = null;
-        boolean notAvailable = false;
-        boolean sameLean = false;
-        //Verifica que el usuario exista
-        for(User u : users){
-            String id = u.getId();
-            if (id != null && id.equals(userId)) {
-                userFound=u;
-            }
-        }
-        //Verifica que el libro exista y que si existe, esté disponible
-        for(Book b : books.keySet()){
-            String id = b.getIsbn();
-            if (id.equals(isbn)) {
-                bookFound=b;
-                if (books.get(bookFound) == 0){
-                    notAvailable = true;
-                }
-            }
-        }
-        if (userFound != null && bookFound != null) {
-            //Verifica que el préstamo no sea el mismo para el mismo usuario
-            for (Loan l : loans) {
-                if (l.getStatus() == LoanStatus.ACTIVE && l.getUser().getId().equals(userId) && l.getBook().getIsbn().equals(isbn)) {
-                    sameLean = true;
-                }
-            }
-            //Verifica que todos los requerimientos se cumplan
-            if (notAvailable || sameLean) {
-                return null;
-            }
-            //Decrementa el libro
-            books.put(bookFound, books.get(bookFound) - 1);
-            //Crea el préstamo y le asigna el usuario, libro y estado activo
-            Loan newLoan = new Loan();
-            newLoan.setUser(userFound);
-            newLoan.setBook(bookFound);
-            newLoan.setStatus(LoanStatus.ACTIVE);
-            newLoan.setLoanDate(LocalDateTime.now());
-            loans.add(newLoan);
-            return newLoan;
-        }
-        return null;
-    }
+ //TODO Implement the login of loan a book to a user based on the UserId and the isbn.
+ User userFound = null;
+ Book bookFound = null;
+ boolean notAvailable = false;
+ boolean sameLean = false;
+ //Verifica que el usuario exista
+ for(User u : users){
+  String id = u.getId();
+  if (id != null && id.equals(userId)) {
+   userFound=u;
+  }
+ }
+ //Verifica que el libro exista y que si existe, esté disponible
+ for(Book b : books.keySet()){
+  String id = b.getIsbn();
+  if (id.equals(isbn)) {
+   bookFound=b;
+   if (books.get(bookFound) == 0){
+    notAvailable = true;
+   }
+  }
+ }
+ if (userFound != null && bookFound != null) {
+  //Busca que el prestamo no sea el mismo para el mismo usuario y que el prestamo no este en ACTIVE
+  for (Loan l : loans) {
+   if (l.getStatus() == LoanStatus.ACTIVE && l.getUser().getId().equals(userId) && l.getBook().getIsbn().equals(isbn)) {
+    sameLean = true;
+   }
+  }
+  //Verifica que el usuario no tenga el mismo prestamo y este disponible
+  if (!sameLean && !notAvailable) {
+   //Decrementa el libro
+   books.put(bookFound, books.get(bookFound) - 1);
+   //Crea el prestamo y le asigna el usuario, libro y estado activo
+   Loan newLoan = new Loan();
+   newLoan.setUser(userFound);
+   newLoan.setBook(bookFound);
+   newLoan.setStatus(LoanStatus.ACTIVE);
+   newLoan.setLoanDate(LocalDateTime.now());
+   addLoan(newLoan);
+   return newLoan;
+  }
+ }
+ return null;
+}
 ```
 
 <b>returnLoan(Loan loan)</b>
@@ -212,9 +211,9 @@ Además, se muestra un 80% de cobertura en "Missed Branches", lo cual indica que
 
 <img src="img/jacoco2.png" width="600">
 
-Decidimos mejorar la cobertura, por ende llegamos a implementar un total de 30 pruebas las cuales cubre todos los casos posibles
+Decidimos mejorar la cobertura, por ende llegamos a implementar un total de 26 pruebas las cuales cubre todos los casos posibles y eliminamos carpetas innecesarias.
 
-<img src="img/jacoco3.png" width="600">
+<img src="img/jacoco4.png" width="600">
 
 Lo anterior nos permitió desarrollar un código más robusto basado en pruebas, ya que, mediante esta herramienta, pudimos identificar más casos en los que cada método podría fallar o tener éxito.
 
@@ -285,12 +284,6 @@ docker ps -a
 
 <li>Generamos la integración con SonarQube</li>
 <img src="img/sonar9.png" width="450">
-<br><br>
-
-<li>Observamos que la cobertura no es suficientes, corregimos las pruebas para cubrir más casos y eliminamos carpetas ininnecesarias</li>
-
-<img src="img/sonar7.png" width="700">
-<img src="img/sonar8.png" width="700">
 <br><br>
 
 <li>Cumplimos la meta de una cobertura mayor al 85%</li>
