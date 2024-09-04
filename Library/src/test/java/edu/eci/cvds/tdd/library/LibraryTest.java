@@ -34,7 +34,10 @@ public class LibraryTest {
         library.addUser(user3);
     }
 /*ADD A BOOK*/
-    //pasa
+    /*
+    *Prueba para añadir un libro que ya existe,
+    * verifica que la cantidad se haya aumentado
+     */
     @Test
     public void AddanExistingBookSuccessfully(){
         library.addBook(book);
@@ -42,13 +45,18 @@ public class LibraryTest {
         library.addBook(book2);
         assertEquals(2,library.getBooks().get(book));
     }
-    //pasa
+    /*
+     *Prueba para añadir un libro nuevo,
+     * verifica que se haya añadido correctamente
+     */
     @Test
     public void AddNewBookSuccessfully(){
         Book book1 = new Book("Brandon Sanderson", "El Camino de los Reyes", "C113");
         assertTrue(library.addBook(book1));
     }
-    //Nodeberia pasar
+    /*
+     *Prueba verificar que no se acepten libros con atributos vacíos
+     */
     @Test
     public void VerifyThatBooksWithEmptyParametersCannotBeAdded(){
         assertFalse(library.addBook(new Book("El necronomicon","","")));
@@ -61,13 +69,17 @@ public class LibraryTest {
         assertFalse(library.addBook(new Book("El necronomicon","","L999")));
 
     }
-    //No deberia pasar, verifica que no sea valido parametros nulos
+    /*
+     *Prueba verificar que no se acepten valores nulos por parametro
+     */
     @Test
     public void SendNullBook(){
         assertFalse(library.addBook(null));
 
     }
-    //Enviar un libro con atributos nulos
+    /*
+     *Prueba verificar que no se acepten libros que contenga atributos nulos
+     */
     @Test
     public void sendNullAttributes() {
         Book book2 = new Book(null,"Mario Mendoza","L478");
@@ -82,7 +94,9 @@ public class LibraryTest {
 
 
     /*LEAN A BOOK*/
-
+    /*
+     *Prueba verificar que se añadio un prestamo con todos los requesitos
+     */
     @Test
     public void AddNewLeanSuccessfully()  {
         User user1 = new User();
@@ -93,18 +107,19 @@ public class LibraryTest {
         library.addBook(book1);
         assertNotNull(library.loanABook(user1.getId(), book1.getIsbn()));
     }
+    /*
+     *Prueba verificar que no se añadio un prestamo de un libro no disponible
+     */
     @Test
     public void LeanABookNotAvailable(){
-        /*library.loanABook(user.getId(), book.getIsbn());
-        LibraryException exception = assertThrows(LibraryException.class, () -> {
-            library.loanABook(user2.getId(), book.getIsbn());
-        });
-        assertEquals("Book not available", exception.getMessage());*/
         library.addBook(book);
         Loan loan1 = library.loanABook(user2.getId(), book.getIsbn());
         Loan noLoan = library.loanABook(user.getId(), book.getIsbn());
         assertNull(noLoan);
     }
+    /*
+     *Prueba verificar que se puede prestar el mismo libro a diferentes usuarios siempre que este disponible
+     */
     @Test
     public void VerifyThatAllBooksOfTheSameIdCanBeLeant(){
         Book book1 = new Book("Brandon Sanderson", "Palabras Radiantes", "R200");
@@ -121,7 +136,9 @@ public class LibraryTest {
         assertNotNull(loan1);
     }
     @Test
-    //Prestar paramateros vacios
+    /*
+     *Prueba verificar que se no se aceptan parametros nulos
+     */
     public void nullParemeters(){
         User newUser = new User();
         newUser.setId("U432");
@@ -134,14 +151,19 @@ public class LibraryTest {
         Loan isloan3 = library.loanABook(null,"L123");
         assertNull(isloan3);
     }
-    //Añade Usuarios y libros que no existen, no deberia pasar
+    /*
+     *Prueba verificar que no se hace prestamos con usuarios y libros que no estan registrados,
+     * es decir, que no se encuentra en users ni en books de la clase library
+     */
     @Test
     public void VerifyParametersNotFound(){
         Book newBook = new Book("IT","Stephen King","L432");
         assertNull(library.loanABook("U895","L432"));
         assertNull(library.loanABook("U123","L000"));
     }
-    //Verifica que el monto del libro prestado se decremente
+    /*
+     *Prueba verificar que al hacer un prestamo, la cantidad del libro se decremente
+     */
     @Test
     public void VerifyDecrementAmountOfBook(){
         User newUser = new User();
@@ -155,7 +177,9 @@ public class LibraryTest {
         assertEquals(0,library.getBooks().get(newBook));
 
     }
-    //Verifica que el estado del prestamo esté activo
+    /*
+     *Prueba verificar que al hacer un prestamo, el estado de este es ACTIVO
+     */
     @Test
     public void LoanStatusActive(){
         User newUser = new User();
@@ -167,17 +191,12 @@ public class LibraryTest {
         Loan isloan = library.loanABook("U432","L895");
         assertEquals(isloan.getStatus(), LoanStatus.ACTIVE);
     }
+
+    /*
+     *Prueba verificar que un usuario no puede tener el mismo prestamo
+     */
     @Test
-    public void UserCannotLoanSameBookTwiceAtSameTime() {
-        Loan loan = library.loanABook(user.getId(), book.getIsbn());
-        /*LibraryException exception = assertThrows(LibraryException.class, () -> {
-            library.loanABook(user.getId(), book.getIsbn());
-        });
-        assertEquals("Loan not found", exception.getMessage());*/
-        assertNull(library.loanABook(user.getId(), book.getIsbn()));
-    }
-    @Test
-    public void verifySameLoan(){
+    public void UserCannotLoanSameBookTwiceAtSameTime(){
         User u = new User();
         u.setId("U432");
         u.setName("Andres");
@@ -188,26 +207,13 @@ public class LibraryTest {
         assertEquals(LoanStatus.ACTIVE,l.getStatus());
         assertEquals(u.getId(),l.getUser().getId());
         assertEquals(b.getIsbn(),l.getBook().getIsbn());
+        library.addBook(b);
         Loan l2 = library.loanABook(u.getId(),b.getIsbn());
         assertNull(l2);
     }
-    @Test
-    public void differentUserButSameLoanAndBook(){
-        User u = new User();
-        u.setId("U432");
-        u.setName("Andres");
-        User u2 = new User();
-        u2.setId("U888");
-        u2.setName("Andrea");
-        Book b = new Book("Harry Potter","J.K Rowling","L895");
-        library.addBook(b);
-        library.addBook(b);
-        library.addUser(u);
-        library.addUser(u2);
-        Loan l = library.loanABook(u.getId(),b.getIsbn());
-        Loan l2 = library.loanABook(u2.getId(),b.getIsbn());
-        assertNotNull(l2);
-    }
+    /*
+     *Prueba verificar que un usuario puede tener prestamos de diferentes libros
+     */
     @Test
     public void differentBookButSameLoanAndUser(){
         User u = new User();
@@ -222,6 +228,9 @@ public class LibraryTest {
         Loan l2 = library.loanABook(u.getId(),b2.getIsbn());
         assertNotNull(l2);
     }
+    /*
+     *Prueba verificar que no se puede realizar un prestamo a un usuario con id nulo
+     */
     @Test
     public void userWithNullId(){
         User u = new User();
@@ -236,23 +245,12 @@ public class LibraryTest {
         Loan l = library.loanABook(u2.getId(), book.getIsbn());
         assertNotNull(l);
     }
-    @Test
-    public void availableButSameLean(){
-        User u = new User();
-        u.setId("U555");
-        u.setName("Andres");
-        library.addUser(u);
-        library.addBook(book);
-        library.addBook(book);
-        Loan l = library.loanABook(u.getId(),book.getIsbn());
-        assertEquals(1,library.getBooks().get(book));
-        Loan l2 = library.loanABook(u.getId(),book.getIsbn());
-        assertNull(l2);
-    }
 
 
 /*RETURN LOAN*/
-
+/*
+ *Prueba para verificar que al devolver un prestamo, el estado cambia a RETORNADO
+ */
     @Test
     public void VerifyReturnedStatusLoan(){
         Book book1 = new Book("Brandon Sanderson", "Palabras Radiantes", "R200");
@@ -265,6 +263,9 @@ public class LibraryTest {
         library.returnLoan(loan1);
         assertEquals(LoanStatus.RETURNED,loan1.getStatus());
     }
+    /*
+     *Prueba para verificar que el libro devuelto se incrementó
+     */
     @Test
     public void VerifyReturnedBookIncrement(){
         Book book1 = new Book("Brandon Sanderson", "Palabras Radiantes", "R200");
@@ -284,6 +285,9 @@ public class LibraryTest {
         library.returnLoan(loan3);
         assertEquals(3,library.getBooks().get(book1));
     }
+    /*
+     *Prueba para verificar que un prestamo no existe (no se encontro en la lista de loans)
+     */
     @Test
     public void LoanDoesNotExist(){
         loan = new Loan();
@@ -294,7 +298,9 @@ public class LibraryTest {
         assertNull(library.returnLoan(loan));
 
     }
-    //Verifica que la fecha que se devolvió el prestamos coincida con la fecha actual
+    /*
+     *Prueba para verificar que la fecha que se devolvió el prestamo sea la fecha actual
+     */
     @Test
     public void VerifyCurrentDate(){
         User newUser = new User();
@@ -308,7 +314,9 @@ public class LibraryTest {
         assertEquals(returnedLoan.getReturnDate(), LocalDateTime.now());
 
     }
-    //Verifica que el prestamo coincida con el usuario
+    /*
+     *Prueba para verificar que el prestamo devuelto coincida con el usuario que realizó el prestamo
+     */
     @Test
     public void VerifyCorrectUser(){
         User newUser = new User();
@@ -322,22 +330,10 @@ public class LibraryTest {
         assertEquals(returnedLoan.getUser(), newUser);
 
     }
-    //Verifica que el monto del libro se haya incrementado
-    @Test
-    public void CheckIncreaseLeanBook(){
-        User newUser = new User();
-        newUser.setId("U436");
-        newUser.setName("Esteban");
-        Book newBook = new Book("Frankenstein","Mary Shelly","L448");
-        library.addBook(newBook);
-        library.addUser(newUser);
-        Loan isloan = library.loanABook("U436","L448");
-        assertEquals(library.getBooks().get(isloan.getBook()), 0);
-        Loan returnedLoan = library.returnLoan(isloan);
-        Book leanBook = returnedLoan.getBook();
-        assertEquals(library.getBooks().get(leanBook), 1);
-    }
-    //Verifica que un libro prestado que acabó de devolverse, pueda volver a prestarse
+
+    /*
+     *Prueba para verificar que el libro que acabó de devolverse, pueda volver a prestarse
+     */
     @Test
     public void LendABookThatWasReturned(){
         User newUser = new User();
@@ -350,7 +346,9 @@ public class LibraryTest {
         Loan l3 = library.loanABook(newUser.getId(), l2.getBook().getIsbn());
         assertNotNull(l3);
     }
-    //Verificar que el prestamo que se va a devolver este en estado ACTIVE antes de ser devuelto
+    /*
+     *Prueba para verificar que un prestamo en estado RETURNED no pueda volver a devolverse (necesita estar en ACTIVE)
+     */
     @Test
     public void LendABookThatWasNotReturned(){
         User newUser = new User();
@@ -363,16 +361,25 @@ public class LibraryTest {
         Loan l3 = library.returnLoan(l2);
         assertNull(l3);
     }
+    /*
+     *Prueba para verificar que parametros nulos
+     */
     @Test
     public void sendNullLoan(){
         assertNull(library.returnLoan(null));
     }
+    /*
+     *Prueba para verificar que los prestamos realizados se estan añadiendo a la lista
+     */
     @Test
     public void getTheCorrectNumberOfLoans() {
         library.addBook(book);
         library.loanABook(user.getId(), book.getIsbn());
         assertEquals(1,library.getLoans().size());
     }
+    /*
+     *Prueba para verificar que los prestamos realizados se estan añadiendo a la lista
+     */
     @Test
     public void addingLoadCorrectly(){
         loan.setUser(user);
@@ -381,6 +388,10 @@ public class LibraryTest {
         assertTrue(library.addLoan(loan));
         assertEquals(library.getLoans().size(),1);
     }
+    /*
+     *Prueba para verificar que el prestamo devuelto tenga un libro que este registrado en la biblioteca (debe estar en el Map de libros)
+     * Si el libro no existe, no se devuelve el prestamo, es decir null
+     */
     @Test
     public void CorrectLoanButNotExistBook(){
         Loan l = new Loan();
