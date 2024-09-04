@@ -24,7 +24,6 @@ public class Library {
         books = new HashMap<>();
         loans = new ArrayList<>();
     }
-
     /**
      * Adds a new {@link edu.eci.cvds.tdd.library.book.Book} into the system, the book is store in a Map that contains
      * the {@link edu.eci.cvds.tdd.library.book.Book} and the amount of books available, if the book already exist the
@@ -39,13 +38,6 @@ public class Library {
                 || book.getIsbn() == null || book.getIsbn().isEmpty()) {
                 return false;
             }
-            /*if (books.containsKey(book)) {
-                //se añade el libro
-                books.put(book, books.get(book)+ 1);
-            } else {
-                //se agrega con una cantidad inicial de 1
-                books.put(book, 1);
-            }*/
         for(Book b : books.keySet()){
             if (b.equals(book)) {
                 books.put(b, books.get(b) + 1);
@@ -55,8 +47,6 @@ public class Library {
         books.put(book, 1);
         return true;
     }
-
-
     /**
      * This method creates a new loan with for the User identify by the userId and the book identify by the isbn,
      * the loan should be store in the list of loans, to successfully create a loan is required to validate that the
@@ -116,7 +106,6 @@ public class Library {
         }
         return null;
     }
-
     /**
      * This method return a loan, meaning that the amount of books should be increased by 1, the status of the Loan
      * in the loan list should be {@link edu.eci.cvds.tdd.library.loan.LoanStatus#RETURNED} and the loan return
