@@ -289,6 +289,7 @@ docker ps -a
 <li>Cumplimos la meta de una cobertura mayor al 85%</li>
 <img src="img/sonar12.png" width="700">
 <img src="img/sonar11.png" width="700">
+<img src="img/library.png" width="700">
 
 </ul>
 
